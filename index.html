@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FBCJ Church Plant Analysis</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f5f5; color: #333; }
+        .header { background: #1a365d; color: white; padding: 2rem; text-align: center; }
+        .header h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+        .header p { opacity: 0.8; font-size: 1rem; }
+        .container { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
+        .section-title { font-size: 1.2rem; color: #1a365d; margin: 2rem 0 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid #e2e8f0; }
+        .cards { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+        @media (min-width: 600px) { .cards { grid-template-columns: 1fr 1fr; } }
+        .card { background: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: box-shadow 0.2s; text-decoration: none; color: inherit; display: block; }
+        .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .card h3 { color: #1a365d; margin-bottom: 0.5rem; font-size: 1.1rem; }
+        .card p { color: #666; font-size: 0.9rem; line-height: 1.4; }
+        .card .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .badge-map { background: #ebf5ff; color: #1a56db; }
+        .badge-chart { background: #f0fdf4; color: #166534; }
+        .badge-primary { background: #fef3c7; color: #92400e; }
+        .footer { text-align: center; padding: 2rem; color: #999; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>FBCJ Church Plant Analysis</h1>
+        <p>First Baptist Church of Jackson vs. Dalton (Proposed)</p>
+    </div>
+    <div class="container">
+        <h2 class="section-title">Interactive Maps</h2>
+        <div class="cards">
+            <a class="card" href="FBCJ_Church_Map_Time.html">
+                <span class="badge badge-primary">Recommended</span>
+                <h3>Driving Time Contour Map</h3>
+                <p>Graduated contour bands showing which church is closer by driving time. Contours at 0, 1, 2, 5, and 10 minute intervals. Red = Jackson territory, Blue = Dalton territory.</p>
+            </a>
+            <a class="card" href="FBCJ_Church_Map_Distance.html">
+                <span class="badge badge-map">Map</span>
+                <h3>Driving Distance Contour Map</h3>
+                <p>Same visualization by driving distance (miles) instead of time. Contours at 0, 1, 2, 5, and 10 mile intervals.</p>
+            </a>
+            <a class="card" href="FBCJ_Church_Map.html">
+                <span class="badge badge-map">Map</span>
+                <h3>Combined Boundary Map</h3>
+                <p>Single equal-distance and equal-time boundary lines with all member addresses color-coded by attendance probability.</p>
+            </a>
+        </div>
+
+        <h2 class="section-title">Probability Charts</h2>
+        <div class="cards">
+            <a class="card" href="FBCJ_Church_Probability_Distance.html">
+                <span class="badge badge-chart">Chart</span>
+                <h3>Probability by Driving Distance</h3>
+                <p>Logistic sigmoid showing probability of attending Jackson based on the driving distance difference. Each dot is a family.</p>
+            </a>
+            <a class="card" href="FBCJ_Church_Probability_Time.html">
+                <span class="badge badge-chart">Chart</span>
+                <h3>Probability by Driving Time</h3>
+                <p>Same analysis using driving time difference instead of distance.</p>
+            </a>
+        </div>
+    </div>
+    <div class="footer">
+        Data sourced from ServantKeeper directory. Driving distances via Google Maps API.<br>
+        Maps are interactive — click/hover on markers for details. Use layer controls to toggle views.
+    </div>
+</body>
+</html>
