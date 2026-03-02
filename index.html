@@ -22,51 +22,73 @@
         .badge-map { background: #ebf5ff; color: #1a56db; }
         .badge-chart { background: #f0fdf4; color: #166534; }
         .badge-primary { background: #fef3c7; color: #92400e; }
+        .methodology { background: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-top: 1rem; font-size: 0.9rem; line-height: 1.6; color: #555; }
+        .methodology h3 { color: #1a365d; margin-bottom: 0.75rem; }
+        .methodology ul { margin: 0.5rem 0 0.5rem 1.2rem; }
         .footer { text-align: center; padding: 2rem; color: #999; font-size: 0.85rem; }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>FBCJ Church Plant Analysis</h1>
-        <p>First Baptist Church of Jackson vs. Dalton (Proposed)</p>
+        <p>First Baptist Church of Jackson vs. Dalton (Proposed) &mdash; Driving Time & Distance Analysis</p>
     </div>
     <div class="container">
-        <h2 class="section-title">Interactive Maps</h2>
+        <h2 class="section-title">Interactive Contour Maps</h2>
         <div class="cards">
             <a class="card" href="FBCJ_Church_Map_Time.html">
-                <span class="badge badge-primary">Recommended</span>
+                <span class="badge badge-primary">Start Here</span>
                 <h3>Driving Time Contour Map</h3>
-                <p>Graduated contour bands showing which church is closer by driving time. Contours at 0, 1, 2, 5, and 10 minute intervals. Red = Jackson territory, Blue = Dalton territory.</p>
+                <p>Shows which church is closer by driving time at every point in the region. Graduated contour bands at 0, 1, 2, 5, and 10 minute intervals. Red = Jackson territory, Blue = Dalton territory. Based on Google Maps routing for Sunday morning.</p>
             </a>
             <a class="card" href="FBCJ_Church_Map_Distance.html">
                 <span class="badge badge-map">Map</span>
                 <h3>Driving Distance Contour Map</h3>
-                <p>Same visualization by driving distance (miles) instead of time. Contours at 0, 1, 2, 5, and 10 mile intervals.</p>
+                <p>Same visualization using driving distance (miles) instead of time. Contours at 0, 1, 2, 5, and 10 mile intervals.</p>
             </a>
             <a class="card" href="FBCJ_Church_Map.html">
                 <span class="badge badge-map">Map</span>
                 <h3>Combined Boundary Map</h3>
-                <p>Single equal-distance and equal-time boundary lines with all member addresses color-coded by attendance probability.</p>
+                <p>Equal-distance and equal-time boundary lines with all member addresses color-coded. Includes probability scores based on driving time advantage.</p>
             </a>
         </div>
 
-        <h2 class="section-title">Probability Charts</h2>
+        <h2 class="section-title">Family Distribution Charts</h2>
         <div class="cards">
-            <a class="card" href="FBCJ_Church_Probability_Distance.html">
-                <span class="badge badge-chart">Chart</span>
-                <h3>Probability by Driving Distance</h3>
-                <p>Logistic sigmoid showing probability of attending Jackson based on the driving distance difference. Each dot is a family.</p>
-            </a>
             <a class="card" href="FBCJ_Church_Probability_Time.html">
                 <span class="badge badge-chart">Chart</span>
-                <h3>Probability by Driving Time</h3>
-                <p>Same analysis using driving time difference instead of distance.</p>
+                <h3>Distribution by Driving Time</h3>
+                <p>Each family plotted by how much closer one church is by driving time. Shows the actual split of families between Jackson and Dalton territory.</p>
             </a>
+            <a class="card" href="FBCJ_Church_Probability_Distance.html">
+                <span class="badge badge-chart">Chart</span>
+                <h3>Distribution by Driving Distance</h3>
+                <p>Same view using driving distance instead of time.</p>
+            </a>
+        </div>
+
+        <h2 class="section-title">Methodology</h2>
+        <div class="methodology">
+            <h3>Data Sources & Approach</h3>
+            <ul>
+                <li><b>Addresses:</b> 309 unique Ohio addresses from the FBCJ ServantKeeper directory (3 geographic outliers excluded, 10 out-of-state excluded)</li>
+                <li><b>Geocoding:</b> US Census Bureau geocoder (primary), Nominatim ZIP centroid fallback (9 addresses)</li>
+                <li><b>Driving data:</b> Google Maps Distance Matrix API with Sunday 9:00 AM departure time for church-relevant traffic patterns</li>
+                <li><b>Contour maps:</b> 40x40 grid (1,600 points) centered symmetrically on the midpoint between the two churches, covering a 20-mile radius in each direction. Smoothed with median filter + Gaussian blur to remove routing noise</li>
+                <li><b>Probability model:</b> Hypothetical logistic model based on driving time difference. This is an <em>assumed</em> behavioral model, not fitted to actual attendance outcomes. It illustrates how attendance <em>might</em> shift based on convenience, but actual behavior depends on many factors (relationships, ministry preference, habit, etc.)</li>
+            </ul>
+            <h3>Important Notes</h3>
+            <ul>
+                <li>This dataset is inherently skewed toward Jackson &mdash; these are current FBCJ members, so most addresses cluster near the existing church</li>
+                <li>The contour maps show objective geographic data (which church is closer from any point). These are the most reliable visualizations</li>
+                <li>9 addresses used ZIP code centroid (approximate location) and are marked as "Low Confidence" on the maps</li>
+                <li>All maps are interactive &mdash; hover over markers for family details, use layer controls to toggle views</li>
+            </ul>
         </div>
     </div>
     <div class="footer">
-        Data sourced from ServantKeeper directory. Driving distances via Google Maps API.<br>
-        Maps are interactive — click/hover on markers for details. Use layer controls to toggle views.
+        Data sourced from ServantKeeper directory. Driving distances via Google Maps API (Sunday 9 AM departure).<br>
+        Maps are interactive &mdash; click/hover on markers for details. Use layer controls to toggle views.
     </div>
 </body>
 </html>
