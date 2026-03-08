@@ -127,9 +127,32 @@ The analysis includes two statistical tests to confirm whether observed patterns
 
 For example, if 62% of families are closer to Jackson: could you get that result by flipping a fair coin 300 times? The binomial test answers this.
 
+### Effect Size (Rank-Biserial r)
+
+The Wilcoxon test tells you *whether* the time difference is significant, but not *how big* the effect is. The **rank-biserial correlation** (Rosenthal, 1991) answers that. It measures how consistently families lean one direction when ranked by time difference.
+
+- Computed as `r = |Z| / sqrt(N)`, where Z is the normal approximation of the Wilcoxon statistic
+- Ranges from 0 (no consistent direction) to ~1 (every family leans the same way)
+- **< 0.1** = small, **0.1–0.3** = medium, **> 0.3** = large
+
+This is the standard effect size for paired non-parametric tests. It replaces Cohen's d, which assumes normality.
+
+### Bootstrap Confidence Intervals
+
+Point estimates like "62% lean Jackson" don't tell you how precise the number is. Bootstrap CIs answer: **"If we could re-run this analysis on a different sample of families, where would the numbers land?"**
+
+**Method:** Resample the N families 10,000 times with replacement. For each resample, compute the median time difference and the % closer to Jackson. The 2.5th and 97.5th percentiles of those 10,000 values form the 95% CI.
+
+**How to read it:**
+- "Median: -3.2 min [95% CI: -4.8 to -1.6]" → we're confident the true median is between -4.8 and -1.6 minutes
+- "62% closer to Jackson [95% CI: 57% to 67%]" → the true proportion is likely between 57% and 67%
+- If a CI for the Jackson % includes 50%, the directional lean is **not robust**
+
+The bootstrap makes no distributional assumptions, consistent with the non-parametric approach used throughout.
+
 ### High-Quality vs All Data
 
-Both tests are reported twice:
+All tests and CIs are reported twice:
 - **All addresses**: includes every geocoded family
 - **High-quality only**: excludes families whose location or driving time was estimated (ZIP centroid or straight-line fallback)
 
