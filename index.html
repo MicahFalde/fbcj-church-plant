@@ -25,6 +25,12 @@
         .methodology { background: white; border-radius: 8px; padding: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-top: 1rem; font-size: 0.9rem; line-height: 1.6; color: #555; }
         .methodology h3 { color: #1a365d; margin-bottom: 0.75rem; }
         .methodology ul { margin: 0.5rem 0 0.5rem 1.2rem; }
+        .methodology table { width: 100%; border-collapse: collapse; margin: 0.75rem 0; font-size: 0.85rem; }
+        .methodology th { background: #f1f5f9; text-align: left; padding: 6px 10px; border-bottom: 2px solid #e2e8f0; }
+        .methodology td { padding: 5px 10px; border-bottom: 1px solid #f1f5f9; }
+        .methodology .stat-highlight { background: #f8fafc; border-left: 3px solid #1a365d; padding: 0.75rem 1rem; margin: 0.75rem 0; border-radius: 0 4px 4px 0; }
+        .badge-analysis { background: #fdf2f8; color: #9d174d; }
+        .cards-single { grid-template-columns: 1fr !important; }
         .footer { text-align: center; padding: 2rem; color: #999; font-size: 0.85rem; }
     </style>
 </head>
@@ -68,25 +74,89 @@
             <a class="card" href="FBCJ_Church_Histogram.html">
                 <span class="badge badge-chart">Chart</span>
                 <h3>Time Difference Histogram</h3>
-                <p>Distribution of families by driving time difference in 2-minute buckets. Highlights the "toss-up zone" where families are within 2 minutes of either church. Shows 202 Jackson-leaning, 51 Dalton-leaning, 56 toss-up.</p>
+                <p>Distribution of families by driving time difference with KDE density curve. Red bars = Jackson closer, blue bars = Dalton closer. Yellow zone = toss-up (within 5 min). Includes median, skewness, and data quality notes.</p>
             </a>
+        </div>
+
+        <h2 class="section-title">Model Robustness</h2>
+        <div class="cards cards-single">
+            <a class="card" href="FBCJ_Sensitivity_Analysis.html">
+                <span class="badge badge-analysis">Analysis</span>
+                <h3>Sensitivity Analysis</h3>
+                <p>How do conclusions change when model parameters change? Left panel tests the K parameter (logistic steepness) across 7 values. Right panel tests incumbency bias (how much closer Dalton must be to overcome loyalty to Jackson). Shows which findings are robust vs. parameter-dependent.</p>
+            </a>
+        </div>
+
+        <h2 class="section-title">Key Findings</h2>
+        <div class="methodology">
+            <div class="stat-highlight">
+                <b>274 addresses analyzed</b> (631 people: 433 adults, 92 graduated, 106 children K&ndash;12)<br>
+                260 high-quality (exact geocode + Google routing) &bull; 14 low-quality (approx. location or straight-line estimate)
+            </div>
+
+            <h3>Statistical Results</h3>
+            <table>
+                <tr><th>Metric</th><th>All Addresses</th><th>High-Quality Only</th></tr>
+                <tr><td>Median time difference</td><td>&minus;7.2 min (Jackson closer)</td><td>&minus;7.2 min (Jackson closer)</td></tr>
+                <tr><td>Closer to Jackson</td><td>222 / 274 (81%)</td><td>213 / 260 (82%)</td></tr>
+                <tr><td>Wilcoxon signed-rank test</td><td>p &lt; 0.0001 ***</td><td>p &lt; 0.0001 ***</td></tr>
+                <tr><td>Binomial test (vs 50/50)</td><td>p &lt; 0.0001 ***</td><td>p &lt; 0.0001 ***</td></tr>
+                <tr><td>Effect size</td><td>0.73 (medium)</td><td>0.75 (medium)</td></tr>
+            </table>
+            <p style="font-size:0.85rem;color:#888;margin-top:0.25rem;">*** = statistically significant at p &lt; 0.001. The split is real, not random chance.</p>
+
+            <h3>By Headcount (weighted by household size)</h3>
+            <table>
+                <tr><th>Group</th><th>Jackson Closer</th><th>Dalton Closer</th></tr>
+                <tr><td>All people</td><td>514 (81.5%)</td><td>117 (18.5%)</td></tr>
+                <tr><td>Adults</td><td>348 (80%)</td><td>85 (20%)</td></tr>
+                <tr><td>Graduated</td><td>75 (82%)</td><td>17 (18%)</td></tr>
+                <tr><td>Children (K&ndash;12)</td><td>91 (86%)</td><td>15 (14%)</td></tr>
+            </table>
+
+            <h3>Sensitivity: What's Robust?</h3>
+            <table>
+                <tr><th>Finding</th><th>Robust?</th><th>Why</th></tr>
+                <tr><td>68 families are &gt;15 min closer to Jackson</td><td>Yes</td><td>Holds at any K value</td></tr>
+                <tr><td>6 families are &gt;15 min closer to Dalton</td><td>Yes</td><td>Holds at any K value</td></tr>
+                <tr><td>200 families are in the swing zone</td><td>Direction yes, exact % no</td><td>Classification depends on K and bias</td></tr>
+                <tr><td>At 10-min incumbency bias, only 11 families (4%) lean Dalton</td><td>Yes</td><td>Accounting for switching cost drastically reduces Dalton pool</td></tr>
+            </table>
         </div>
 
         <h2 class="section-title">Methodology</h2>
         <div class="methodology">
             <h3>Data Sources & Approach</h3>
             <ul>
-                <li><b>Addresses:</b> 309 unique Ohio addresses from the FBCJ ServantKeeper directory (3 geographic outliers excluded, 10 out-of-state excluded)</li>
-                <li><b>Geocoding:</b> US Census Bureau geocoder (primary), Nominatim ZIP centroid fallback (9 addresses)</li>
-                <li><b>Driving data:</b> Google Maps Distance Matrix API with Sunday 9:00 AM departure time for church-relevant traffic patterns</li>
-                <li><b>Contour maps:</b> 40x40 grid (1,600 points) centered symmetrically on the midpoint between the two churches, covering a 20-mile radius in each direction. Smoothed with median filter + Gaussian blur to remove routing noise</li>
-                <li><b>Probability model:</b> Hypothetical logistic model based on driving time difference. This is an <em>assumed</em> behavioral model, not fitted to actual attendance outcomes. It illustrates how attendance <em>might</em> shift based on convenience, but actual behavior depends on many factors (relationships, ministry preference, habit, etc.)</li>
+                <li><b>Addresses:</b> 278 unique Ohio addresses from the FBCJ ServantKeeper directory (3 geographic outliers &gt;35 mi excluded, 10 out-of-state excluded, 1 geocode failure)</li>
+                <li><b>Geocoding:</b> US Census Bureau geocoder (primary), Nominatim ZIP centroid fallback (~14 addresses)</li>
+                <li><b>Driving data:</b> Google Maps Distance Matrix API with Sunday 9:00 AM EDT departure time for church-relevant traffic patterns</li>
+                <li><b>Contour maps:</b> 40&times;40 grid (1,600 points) centered symmetrically on the midpoint between the two churches, covering a 20-mile radius. Smoothed with median filter + Gaussian blur to remove routing noise</li>
+                <li><b>Probability model:</b> Logistic function: P(Jackson) = 1 / (1 + exp(K &times; (time_to_Jackson &minus; time_to_Dalton))), where K=0.15 per minute. This is an <em>assumed</em> behavioral model, not fitted to actual attendance outcomes</li>
+                <li><b>Statistical tests:</b> Wilcoxon signed-rank (is median time diff &ne; 0?) and binomial test (is the split &ne; 50/50?), reported for both all data and high-quality only</li>
+                <li><b>Sensitivity analysis:</b> K tested at 0.05&ndash;0.30; incumbency bias tested at 0&ndash;15 minutes</li>
             </ul>
+
+            <h3>The K Parameter</h3>
+            <p>K controls how sharply people respond to driving time differences. At K=0.15, a 10-minute time advantage gives ~82% probability for the closer church. <b>K is assumed, not measured from data.</b> The <a href="FBCJ_Sensitivity_Analysis.html">sensitivity analysis</a> shows which conclusions hold across all reasonable K values and which are parameter-dependent.</p>
+
+            <h3>Incumbency Bias</h3>
+            <p>The base model treats Jackson and Dalton as interchangeable &mdash; equal driving time = 50/50. In reality, current members have relationships, habits, and ministry involvement at Jackson. <b>Incumbency bias</b> adds a switching cost: "Dalton must be X minutes closer before it's a fair fight." The sensitivity analysis shows results at 0, 5, 10, and 15 minute bias levels. Church planting research suggests 15&ndash;20 minutes of advantage is typically needed to overcome inertia.</p>
+
+            <h3>Data Quality</h3>
+            <ul>
+                <li><b>260 high-quality</b> addresses: exact geocode + Google Maps routing</li>
+                <li><b>14 low-quality</b> addresses: ZIP centroid location and/or straight-line distance estimate (1.3&times; road factor, ~30 mph assumed)</li>
+                <li>Low-quality entries are marked with gray dashed circles on maps and italicized in the Excel export</li>
+                <li>Statistical tests are reported both ways (all data vs. high-quality only) to ensure low-quality points don't drive conclusions</li>
+            </ul>
+
             <h3>Important Notes</h3>
             <ul>
-                <li>This dataset is inherently skewed toward Jackson &mdash; these are current FBCJ members, so most addresses cluster near the existing church</li>
-                <li>The contour maps show objective geographic data (which church is closer from any point). These are the most reliable visualizations</li>
-                <li>9 addresses used ZIP code centroid (approximate location) and are marked as "Low Confidence" on the maps</li>
+                <li>This analysis answers "which current members might prefer Dalton?" &mdash; not "is Dalton a good location for a church plant?" (the latter requires population, demographic, and competing-church data)</li>
+                <li>The contour maps show objective geographic data (which church is closer from any point) &mdash; these are the most reliable visualizations</li>
+                <li>Driving times use EDT departure; during EST months (Nov&ndash;Mar) actual times may differ by &plusmn;1&ndash;2 minutes</li>
+                <li>The model uses driving time only &mdash; it does not account for social ties, pastoral relationships, ministry involvement, or worship style preferences</li>
                 <li>All maps are interactive &mdash; hover over markers for family details, use layer controls to toggle views</li>
             </ul>
         </div>
